@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>自由巅峰|登录</title>
+		<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+		<link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css">
+		<style>
+			body {
+				padding-top: 40px;
+				padding-bottom: 40px;
+				background-color: #eee;
+			}
+			
+			.logo-img {
+				margin-bottom: 40px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="app">
+			<div class="logo-img" align="center">
+				<img src="img/logo.jpg" class="img-circle" />
+			</div>
+
+			<div class="login-form">
+				<el-row type="flex" justify="center">
+					<el-col :span="5">
+						<el-form :model="loginForm" ref="loginForm" :rules="rules">
+							<el-form-item prop="userName" :error="errorMsg1">
+								<el-input type="userName" v-model="loginForm.userName" placeholder="用户名"></el-input>
+							</el-form-item>
+							<el-form-item prop="password" :error="errorMsg2">
+								<el-input type="password" v-model="loginForm.password" placeholder="密码"></el-input>
+							</el-form-item>
+							<el-form-item>
+								<el-button type="primary" @click="submitForm('loginForm')" style="width:391.66px;">登 录
+								</el-button>
+							</el-form-item>
+						</el-form>
+					</el-col>
+				</el-row>
+			</div>
+		</div>
+
+		<!-- import Vue before Element -->
+		<script src="https://unpkg.com/vue/dist/vue.js"></script>
+		<!-- import JavaScript -->
+		<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+
+		<script>
+			new Vue({
+				el: '#app',
+				data: {
+					loginForm: {
+						userName: '',
+						password: ''
+					},
+					errorMsg1: '',
+					errorMsg2: '',
+					rules: {
+						userName: [{
+							required: true,
+							message: '请输入用户名',
+							trigger: 'blur'
+						}],
+						password: [{
+							required: true,
+							message: '请输入密码',
+							trigger: 'blur'
+						}]
+					}
+				},
+				methods: {
+					submitForm: function(formName) {
+						this.$refs[formName].validate((valid) => {
+							if(valid) {
+								var loginParam = {
+									'userName': this.loginForm.userName,
+									'password': this.loginForm.password
+								};
+								this.$http.post('/travel/admin/login', loginParam).then(
+									function(ret) {
+										var code = ret.body.code;
+										var msg = ret.body.msg;
+
+										if(code == 10000) {
+											localStorage.setItem("loginName", ret.body.data);
+											window.location.href = "index.html";
+										} else if(code == 10002) {
+											this.errorMsg1 = msg;
+										} else if(code == 10003) {
+											this.errorMsg2 = msg;
+										} else {
+											this.$message.error(msg);
+										}
+									},
+									function(ret) {
+										console.log('login failed!');
+									}
+								)
+							} else {
+								console.log('error submit!!');
+								return false;
+							}
+						});
+
+						console.log('errorMsg1:' + this.errorMsg1 + ',' + 'errorMsg2:' + this.errorMsg2);
+					}
+				}
+			})
+		</script>
+	</body>
+
+</html>

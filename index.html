@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8" />
+		<title>自由巅峰|首页</title>
+		<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+		<style>
+			.el-header {
+				background-color: #337ab7;
+				color: #FFFFFF;
+				text-align: left;
+				line-height: 60px;
+				font-size: 18px;
+				font-family: "PingFang SC";
+			}
+			
+			.el-aside {
+				margin-top: 5px;
+				text-align: center;
+			}
+			
+			.el-main {
+				margin: 3px 0 0 0;
+				color: #333;
+				text-align: center;
+			}
+			
+			.login-user {
+				float: right;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="app">
+			<el-container>
+				<el-header>
+					自由巅峰 | 凤凰旅行后台管理
+					<div class="login-user">
+						<el-dropdown>
+							<span class="el-dropdown-link" style="color: #FFFFFF;">
+		                                admin<i class="el-icon-arrow-down el-icon--right"></i>
+		                            </span>
+							<el-dropdown-menu slot="dropdown">
+								<el-dropdown-item>退出</el-dropdown-item>
+							</el-dropdown-menu>
+						</el-dropdown>
+					</div>
+				</el-header>
+
+				<el-container>
+					<el-aside>
+						<el-menu default-active="1" model="vertical" @select="handleSelect" active-text-color="#409EFF">
+							<el-menu-item index="1">
+								<i class="el-icon-tickets"></i>
+								<span>订单管理</span>
+							</el-menu-item>
+							<el-menu-item index="2">
+								<i class="el-icon-picture"></i>
+								<span>景点管理</span>
+							</el-menu-item>
+							<el-menu-item index="3">
+								<i class="el-icon-star-on"></i>
+								<span>行程管理</span>
+							</el-menu-item>
+							<el-submenu index="4">
+								<template slot="title">
+									<i class="el-icon-setting"></i>
+									<span>个人中心</span>
+								</template>
+								<el-menu-item index="4-1">修改密码</el-menu-item>
+								<el-menu-item index="4-2">新增用户</el-menu-item>
+							</el-submenu>
+						</el-menu>
+					</el-aside>
+
+					<el-main>
+						<iframe name="contentFrame" id="contentFrame" src="order-list.html" width="100%" height="800px" frameborder="0"></iframe>
+					</el-main>
+				</el-container>
+			</el-container>
+		</div>
+
+		<script src="https://unpkg.com/vue/dist/vue.js"></script>
+		<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+
+		<script>
+			var app = new Vue({
+				el: '#app',
+
+				data: {
+					loginName: ''
+				},
+
+				mounted: function() {
+					this.getLoginName();
+				},
+
+				methods: {
+
+					// 获取登录人
+					getLoginName: function() {
+						var loginName = localStorage.getItem("loginName");
+						this.loginName = loginName;
+					},
+
+					// 菜单选择
+					handleSelect: function(key, keyPath) {
+						if(key == 1) {
+							document.getElementById("contentFrame").src = "order-list.html";
+						}
+					},
+
+					// 登出
+					logout: function() {
+						localStorage.clear();
+						window.location.href = "login.html";
+					}
+
+				}
+			})
+		</script>
+	</body>
+
+</html>
